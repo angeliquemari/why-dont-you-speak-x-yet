@@ -1,5 +1,8 @@
 const mongoose = require('mongoose');
-mongoose.connect('mongodb://localhost:27017/translations', { useNewUrlParser: true });
+mongoose.connect('mongodb://localhost:27017/translations', {
+  useNewUrlParser: true,
+  useUnifiedTopology: true
+});
 
 const translationSchema = new mongoose.Schema(
   {

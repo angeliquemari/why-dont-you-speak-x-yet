@@ -6,8 +6,7 @@ const { Translate } = require('@google-cloud/translate').v2;
 const googleTranslate = new Translate();
 const db = require('../database/methods.js');
 
-// serve static files to /
-// app.use(express.static('public'));
+app.use(express.static('./client/dist'));
 app.use(express.json());
 app.use(morgan('dev'));
 
