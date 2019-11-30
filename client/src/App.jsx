@@ -13,6 +13,7 @@ export default class App extends React.Component {
     };
     this.getTranslations = this.getTranslations.bind(this);
     this.changeTab = this.changeTab.bind(this);
+    this.deleteTranslation = this.deleteTranslation.bind(this);
   }
 
   componentDidMount() {
@@ -22,20 +23,32 @@ export default class App extends React.Component {
         return this.setState({ languages: response.data });
       })
       .then(this.getTranslations) // get saved translations
-      .then(response => {
-        return this.setState({ translations: response.data });
-      })
       .catch(err => {
         console.log('Error:', err);
       });
   }
 
   getTranslations() {
-    return axios.get('/translations');
+    return axios
+      .get('/translations')
+      .then(response => {
+        let translations = response.data.map(translation => {
+          translation['language'] = this.state.languages[translation.target];
+          return translation;
+        });
+        return this.setState({ translations: translations });
+      })
+      .catch(err => {
+        console.log('Error:', err);
+      });
   }
 
   changeTab(tab) {
     this.setState({ visible: tab });
+  }
+
+  deleteTranslation(id) {
+    axios.delete(`/translations/${id}`).then(this.getTranslations);
   }
 
   render() {
@@ -47,7 +60,12 @@ export default class App extends React.Component {
         </div>
         <div>
           {this.state.visible === 'translate' && <Translate />}
-          {this.state.visible === 'saved' && <Saved />}
+          {this.state.visible === 'saved' && (
+            <Saved
+              translations={this.state.translations}
+              deleteTranslation={this.deleteTranslation}
+            />
+          )}
         </div>
       </div>
     );
