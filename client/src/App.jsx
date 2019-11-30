@@ -21,6 +21,7 @@ export default class App extends React.Component {
     this.updateText = this.updateText.bind(this);
     this.updateLanguage = this.updateLanguage.bind(this);
     this.translateText = this.translateText.bind(this);
+    this.saveTranslation = this.saveTranslation.bind(this);
   }
 
   componentDidMount() {
@@ -67,15 +68,26 @@ export default class App extends React.Component {
   translateText() {
     if (this.state.text.length > 0 && this.state.language.length > 0) {
       axios
-        .post('/translations', { text: this.state.text, target: this.state.language })
+        .post('/translations/translate', { text: this.state.text, target: this.state.language })
         .then(response => {
           this.setState({ translation: response.data });
         })
-        .then(this.getTranslations)
         .catch(err => console.log('Error:', err));
     } else {
       console.log('Missing text and/or language selection');
     }
+  }
+
+  saveTranslation() {
+    axios
+      .post('/translations/save', {
+        text: this.state.text,
+        translation: this.state.translation,
+        target: this.state.language
+      })
+      .then(this.getTranslations)
+      .then(() => this.setState({ text: '', translation: '' }))
+      .catch(err => console.log('Error:', err));
   }
 
   render() {
@@ -92,6 +104,7 @@ export default class App extends React.Component {
               updateText={this.updateText}
               updateLanguage={this.updateLanguage}
               translateText={this.translateText}
+              saveTranslation={this.saveTranslation}
               translation={this.state.translation}
               languages={this.state.languages}
               language={this.state.language}

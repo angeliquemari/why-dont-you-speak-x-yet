@@ -28,28 +28,26 @@ app.get('/languages', (req, res) => {
 
 app.get('/translations', (req, res) => {
   db.getTranslations()
-    .then(translations => {
-      res.send(translations);
-    })
+    .then(translations => res.send(translations))
     .catch(err => {
       console.log('Error:', err);
       res.end();
     });
 });
 
-app.post('/translations', (req, res) => {
-  let text = req.body.text;
-  let target = req.body.target;
-  let translation;
+app.post('/translations/translate', (req, res) => {
   googleTranslate
-    .translate(text, target)
-    .then(response => {
-      translation = response[0];
-      return db.addTranslation({ text: text, translation: translation, target: target });
-    })
-    .then(() => {
-      res.send(translation);
-    })
+    .translate(req.body.text, req.body.target)
+    .then(response => res.send(response[0]))
+    .catch(err => {
+      console.log('Error:', err);
+      res.end();
+    });
+});
+
+app.post('/translations/save', (req, res) => {
+  db.addTranslation(req.body)
+    .then(() => res.end())
     .catch(err => {
       console.log('Error:', err);
       res.end();
@@ -58,9 +56,7 @@ app.post('/translations', (req, res) => {
 
 app.delete('/translations/:id', (req, res) => {
   db.deleteTranslation({ _id: req.params.id })
-    .then(() => {
-      res.end();
-    })
+    .then(() => res.end())
     .catch(err => {
       console.log('Error:', err);
       res.end();

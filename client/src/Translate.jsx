@@ -5,6 +5,7 @@ export default function Translate({
   updateText,
   updateLanguage,
   translateText,
+  saveTranslation,
   translation,
   languages,
   language
@@ -24,7 +25,7 @@ export default function Translate({
       {translation.length > 0 && (
         <div>
           <div>{translation}</div>
-          <button>Placerholder Save</button>
+          <button onClick={saveTranslation}>Save</button>
         </div>
       )}
     </div>
