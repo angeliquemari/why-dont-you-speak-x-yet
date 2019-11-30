@@ -19,14 +19,28 @@ export default function Saved({ translations, deleteTranslation, filter, updateF
           </option>
         ))}
       </select>
-      {translations.map(translation => (
-        <div key={translation._id}>
-          <div>{translation.text}</div>
-          <div>{translation.translation}</div>
-          <div>{translation.language}</div>
-          <button onClick={() => deleteTranslation(translation._id)}>Delete</button>
-        </div>
-      ))}
+      <table className="table">
+        <thead className="thead-light">
+          <tr>
+            <th scope="col">Text</th>
+            <th scope="col">Translation</th>
+            <th scope="col">Language</th>
+            <th scope="col">Delete</th>
+          </tr>
+        </thead>
+        <tbody>
+          {translations.map(translation => (
+            <tr key={translation._id}>
+              <th scope="row">{translation.text}</th>
+              <td>{translation.translation}</td>
+              <td>{translation.language}</td>
+              <td>
+                <button onClick={() => deleteTranslation(translation._id)}>X</button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </div>
   );
 }

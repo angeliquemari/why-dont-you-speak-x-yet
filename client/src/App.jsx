@@ -32,10 +32,14 @@ export default class App extends React.Component {
 
   render() {
     return (
-      <div>
-        <div className="tabs">
-          <div onClick={() => this.changeTab('translate')}>Translate</div>
-          <div onClick={() => this.changeTab('saved')}>Saved</div>
+      <div className="container">
+        <div className="row">
+          <div className="col" onClick={() => this.changeTab('translate')}>
+            <h5>Translate</h5>
+          </div>
+          <div className="col" onClick={() => this.changeTab('saved')}>
+            <h5>Saved</h5>
+          </div>
         </div>
         <div>
           {this.state.visible === 'translate' && (
