@@ -11,17 +11,23 @@ export default function Translate({
   language
 }) {
   return (
-    <div>
-      <textarea value={text} onChange={updateText}></textarea>
-      <select value={language} onChange={updateLanguage}>
-        <option value="">Select language</option>
-        {Object.keys(languages).map(key => (
-          <option key={key} value={key}>
-            {languages[key]}
-          </option>
-        ))}
-      </select>
-      <button onClick={translateText}>Translate</button>
+    <div className="container">
+      <div className="row">
+        <textarea className="col" value={text} onChange={updateText}></textarea>
+      </div>
+      <div className="row">
+        <select className="col" value={language} onChange={updateLanguage}>
+          <option value="">Select language</option>
+          {Object.keys(languages).map(key => (
+            <option key={key} value={key}>
+              {languages[key]}
+            </option>
+          ))}
+        </select>
+        <button className="col" onClick={translateText}>
+          Translate
+        </button>
+      </div>
       {translation.length > 0 && (
         <div>
           <div>{translation}</div>
