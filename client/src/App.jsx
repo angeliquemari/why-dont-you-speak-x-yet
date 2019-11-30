@@ -12,7 +12,8 @@ export default class App extends React.Component {
       visible: 'translate',
       text: '',
       language: '',
-      translation: ''
+      translation: '',
+      filter: ''
     };
     this.getLanguages = helpers.getLanguages.bind(this);
     this.getTranslations = helpers.getTranslations.bind(this);
@@ -22,6 +23,7 @@ export default class App extends React.Component {
     this.updateLanguage = helpers.updateLanguage.bind(this);
     this.translateText = helpers.translateText.bind(this);
     this.saveTranslation = helpers.saveTranslation.bind(this);
+    this.updateFilter = helpers.updateFilter.bind(this);
   }
 
   componentDidMount() {
@@ -52,6 +54,8 @@ export default class App extends React.Component {
             <Saved
               translations={this.state.translations}
               deleteTranslation={this.deleteTranslation}
+              filter={this.state.filter}
+              updateFilter={this.updateFilter}
             />
           )}
         </div>

@@ -32,13 +32,11 @@ module.exports.deleteTranslation = function(id) {
 };
 
 module.exports.updateText = function(e) {
-  let text = e.target.value;
-  this.setState({ text: text });
+  this.setState({ text: e.target.value });
 };
 
 module.exports.updateLanguage = function(e) {
-  let language = e.target.value;
-  this.setState({ language: language, translation: '' });
+  this.setState({ language: e.target.value, translation: '' });
 };
 
 module.exports.translateText = function() {
@@ -59,9 +57,14 @@ module.exports.saveTranslation = function() {
     .post('/translations/save', {
       text: this.state.text,
       translation: this.state.translation,
-      target: this.state.language
+      target: this.state.language,
+      filter: ''
     })
     .then(this.getTranslations)
     .then(() => this.setState({ text: '', translation: '' }))
     .catch(err => console.log('Error:', err));
+};
+
+module.exports.updateFilter = function(e) {
+  this.setState({ filter: e.target.value });
 };
