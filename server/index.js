@@ -4,6 +4,7 @@ const PORT = 3000;
 const morgan = require('morgan');
 const { Translate } = require('@google-cloud/translate').v2;
 const googleTranslate = new Translate();
+const db = require('../database/methods.js');
 
 // serve static files to /
 // app.use(express.static('public'));
@@ -22,31 +23,47 @@ app.get('/languages', (req, res) => {
     })
     .catch(err => {
       console.log('Error:', err);
+      res.end();
     });
 });
 
 app.get('/translations', (req, res) => {
-  // get all translations from db
-  res.end();
+  db.getTranslations()
+    .then(translations => {
+      res.send(translations);
+    })
+    .catch(err => {
+      console.log('Error:', err);
+      res.end();
+    });
 });
 
 app.post('/translations', (req, res) => {
   let text = req.body.text;
-  let target = req.body.target; // language code
+  let target = req.body.target;
   googleTranslate
     .translate(text, target)
     .then(translation => {
-      // save translation to db
-      res.send(translation);
+      return db.addTranslation({ text: text, translation: translation[0], target: target });
+    })
+    .then(() => {
+      res.end();
     })
     .catch(err => {
       console.log('Error:', err);
+      res.end();
     });
 });
 
 app.delete('/translations/:id', (req, res) => {
-  // use req.params.id to delete translation from db
-  res.end();
+  db.deleteTranslation({ _id: req.params.id })
+    .then(() => {
+      res.end();
+    })
+    .catch(err => {
+      console.log('Error:', err);
+      res.end();
+    });
 });
 
 app.listen(PORT, () => console.log(`Server app listening on port ${PORT}`));
