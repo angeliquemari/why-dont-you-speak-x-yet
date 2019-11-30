@@ -28,7 +28,10 @@ module.exports.changeTab = function(tab) {
 };
 
 module.exports.deleteTranslation = function(id) {
-  axios.delete(`/translations/${id}`).then(this.getTranslations);
+  axios
+    .delete(`/translations/${id}`)
+    .then(this.getTranslations)
+    .then(() => this.setState({ filter: '' }));
 };
 
 module.exports.updateText = function(e) {
