@@ -61,7 +61,7 @@ module.exports.saveTranslation = function() {
       filter: ''
     })
     .then(this.getTranslations)
-    .then(() => this.setState({ text: '', translation: '' }))
+    .then(() => this.setState({ text: '', translation: '', filter: '' }))
     .catch(err => console.log('Error:', err));
 };
 
