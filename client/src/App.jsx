@@ -1,8 +1,7 @@
 import React from 'react';
-import axios from 'axios';
-axios.defaults.headers.post['Content-Type'] = 'application/json';
 import Translate from './Translate.jsx';
 import Saved from './Saved.jsx';
+import helpers from './helpers.js';
 
 export default class App extends React.Component {
   constructor(props) {
@@ -15,79 +14,18 @@ export default class App extends React.Component {
       language: '',
       translation: ''
     };
-    this.getTranslations = this.getTranslations.bind(this);
-    this.changeTab = this.changeTab.bind(this);
-    this.deleteTranslation = this.deleteTranslation.bind(this);
-    this.updateText = this.updateText.bind(this);
-    this.updateLanguage = this.updateLanguage.bind(this);
-    this.translateText = this.translateText.bind(this);
-    this.saveTranslation = this.saveTranslation.bind(this);
+    this.getLanguages = helpers.getLanguages.bind(this);
+    this.getTranslations = helpers.getTranslations.bind(this);
+    this.changeTab = helpers.changeTab.bind(this);
+    this.deleteTranslation = helpers.deleteTranslation.bind(this);
+    this.updateText = helpers.updateText.bind(this);
+    this.updateLanguage = helpers.updateLanguage.bind(this);
+    this.translateText = helpers.translateText.bind(this);
+    this.saveTranslation = helpers.saveTranslation.bind(this);
   }
 
   componentDidMount() {
-    axios
-      .get('/languages')
-      .then(response => {
-        return this.setState({ languages: response.data });
-      })
-      .then(this.getTranslations)
-      .catch(err => console.log('Error:', err));
-  }
-
-  getTranslations() {
-    return axios
-      .get('/translations')
-      .then(response => {
-        let translations = response.data.map(translation => {
-          translation['language'] = this.state.languages[translation.target];
-          return translation;
-        });
-        return this.setState({ translations: translations });
-      })
-      .catch(err => console.log('Error:', err));
-  }
-
-  changeTab(tab) {
-    this.setState({ visible: tab });
-  }
-
-  deleteTranslation(id) {
-    axios.delete(`/translations/${id}`).then(this.getTranslations);
-  }
-
-  updateText(e) {
-    let text = e.target.value;
-    this.setState({ text: text });
-  }
-
-  updateLanguage(e) {
-    let language = e.target.value;
-    this.setState({ language: language });
-  }
-
-  translateText() {
-    if (this.state.text.length > 0 && this.state.language.length > 0) {
-      axios
-        .post('/translations/translate', { text: this.state.text, target: this.state.language })
-        .then(response => {
-          this.setState({ translation: response.data });
-        })
-        .catch(err => console.log('Error:', err));
-    } else {
-      console.log('Missing text and/or language selection');
-    }
-  }
-
-  saveTranslation() {
-    axios
-      .post('/translations/save', {
-        text: this.state.text,
-        translation: this.state.translation,
-        target: this.state.language
-      })
-      .then(this.getTranslations)
-      .then(() => this.setState({ text: '', translation: '' }))
-      .catch(err => console.log('Error:', err));
+    this.getLanguages().then(this.getTranslations);
   }
 
   render() {
