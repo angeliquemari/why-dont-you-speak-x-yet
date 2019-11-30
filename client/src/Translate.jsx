@@ -1,11 +1,32 @@
 import React from 'react';
 
-export default function Translate({ updateText, updateLanguage, translateText, translation }) {
+export default function Translate({
+  text,
+  updateText,
+  updateLanguage,
+  translateText,
+  translation,
+  languages,
+  language
+}) {
   return (
     <div>
-      <input id="text-input" onChange={updateText}></input>
+      <textarea value={text} onChange={updateText}></textarea>
+      <select value={language} onChange={updateLanguage}>
+        <option value="">Select language</option>
+        {Object.keys(languages).map(key => (
+          <option key={key} value={key}>
+            {languages[key]}
+          </option>
+        ))}
+      </select>
       <button onClick={translateText}>Translate</button>
-      {translation.length > 0 && <div>{translation}</div>}
+      {translation.length > 0 && (
+        <div>
+          <div>{translation}</div>
+          <button>Placerholder Save</button>
+        </div>
+      )}
     </div>
   );
 }

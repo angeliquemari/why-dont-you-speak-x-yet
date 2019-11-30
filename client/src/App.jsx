@@ -12,7 +12,7 @@ export default class App extends React.Component {
       translations: [],
       visible: 'translate',
       text: '',
-      language: 'de',
+      language: '',
       translation: ''
     };
     this.getTranslations = this.getTranslations.bind(this);
@@ -54,14 +54,14 @@ export default class App extends React.Component {
     axios.delete(`/translations/${id}`).then(this.getTranslations);
   }
 
-  updateText() {
-    let text = document.getElementById('text-input').value;
+  updateText(e) {
+    let text = e.target.value;
     this.setState({ text: text });
   }
 
-  updateLanguage() {
-    // let language = document.getElementById('language-pick').value;
-    // this.setState({ language: language });
+  updateLanguage(e) {
+    let language = e.target.value;
+    this.setState({ language: language });
   }
 
   translateText() {
@@ -73,6 +73,8 @@ export default class App extends React.Component {
         })
         .then(this.getTranslations)
         .catch(err => console.log('Error:', err));
+    } else {
+      console.log('Missing text and/or language selection');
     }
   }
 
@@ -86,10 +88,13 @@ export default class App extends React.Component {
         <div>
           {this.state.visible === 'translate' && (
             <Translate
+              text={this.state.text}
               updateText={this.updateText}
               updateLanguage={this.updateLanguage}
               translateText={this.translateText}
               translation={this.state.translation}
+              languages={this.state.languages}
+              language={this.state.language}
             />
           )}
           {this.state.visible === 'saved' && (
