@@ -1,5 +1,6 @@
 import React from 'react';
 import axios from 'axios';
+axios.defaults.headers.post['Content-Type'] = 'application/json';
 import Translate from './Translate.jsx';
 import Saved from './Saved.jsx';
 
@@ -9,23 +10,27 @@ export default class App extends React.Component {
     this.state = {
       languages: {},
       translations: [],
-      visible: 'translate'
+      visible: 'translate',
+      text: '',
+      language: 'de',
+      translation: ''
     };
     this.getTranslations = this.getTranslations.bind(this);
     this.changeTab = this.changeTab.bind(this);
     this.deleteTranslation = this.deleteTranslation.bind(this);
+    this.updateText = this.updateText.bind(this);
+    this.updateLanguage = this.updateLanguage.bind(this);
+    this.translateText = this.translateText.bind(this);
   }
 
   componentDidMount() {
     axios
-      .get('/languages') // get dict of languages
+      .get('/languages')
       .then(response => {
         return this.setState({ languages: response.data });
       })
-      .then(this.getTranslations) // get saved translations
-      .catch(err => {
-        console.log('Error:', err);
-      });
+      .then(this.getTranslations)
+      .catch(err => console.log('Error:', err));
   }
 
   getTranslations() {
@@ -38,9 +43,7 @@ export default class App extends React.Component {
         });
         return this.setState({ translations: translations });
       })
-      .catch(err => {
-        console.log('Error:', err);
-      });
+      .catch(err => console.log('Error:', err));
   }
 
   changeTab(tab) {
@@ -51,6 +54,28 @@ export default class App extends React.Component {
     axios.delete(`/translations/${id}`).then(this.getTranslations);
   }
 
+  updateText() {
+    let text = document.getElementById('text-input').value;
+    this.setState({ text: text });
+  }
+
+  updateLanguage() {
+    // let language = document.getElementById('language-pick').value;
+    // this.setState({ language: language });
+  }
+
+  translateText() {
+    if (this.state.text.length > 0 && this.state.language.length > 0) {
+      axios
+        .post('/translations', { text: this.state.text, target: this.state.language })
+        .then(response => {
+          this.setState({ translation: response.data });
+        })
+        .then(this.getTranslations)
+        .catch(err => console.log('Error:', err));
+    }
+  }
+
   render() {
     return (
       <div>
@@ -59,7 +84,14 @@ export default class App extends React.Component {
           <div onClick={() => this.changeTab('saved')}>Saved</div>
         </div>
         <div>
-          {this.state.visible === 'translate' && <Translate />}
+          {this.state.visible === 'translate' && (
+            <Translate
+              updateText={this.updateText}
+              updateLanguage={this.updateLanguage}
+              translateText={this.translateText}
+              translation={this.state.translation}
+            />
+          )}
           {this.state.visible === 'saved' && (
             <Saved
               translations={this.state.translations}

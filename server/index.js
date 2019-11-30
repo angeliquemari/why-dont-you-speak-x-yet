@@ -40,13 +40,15 @@ app.get('/translations', (req, res) => {
 app.post('/translations', (req, res) => {
   let text = req.body.text;
   let target = req.body.target;
+  let translation;
   googleTranslate
     .translate(text, target)
-    .then(translation => {
-      return db.addTranslation({ text: text, translation: translation[0], target: target });
+    .then(response => {
+      translation = response[0];
+      return db.addTranslation({ text: text, translation: translation, target: target });
     })
     .then(() => {
-      res.end();
+      res.send(translation);
     })
     .catch(err => {
       console.log('Error:', err);
