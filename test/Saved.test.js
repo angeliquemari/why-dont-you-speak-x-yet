@@ -10,6 +10,7 @@ describe('Saved Component', () => {
         translations={[]}
         deleteTranslation={deleteTranslation}
         filter={''}
+        filterLanguages={{}}
         updateFilter={updateFilter}
       />
     );
