@@ -8,6 +8,7 @@ export default class App extends React.Component {
     super(props);
     this.state = {
       languages: {},
+      filterLanguages: {},
       translations: [],
       visible: 'translate',
       text: '',
@@ -24,10 +25,13 @@ export default class App extends React.Component {
     this.translateText = helpers.translateText.bind(this);
     this.saveTranslation = helpers.saveTranslation.bind(this);
     this.updateFilter = helpers.updateFilter.bind(this);
+    this.getFilterLanguages = helpers.getFilterLanguages.bind(this);
   }
 
   componentDidMount() {
-    this.getLanguages().then(this.getTranslations);
+    this.getLanguages()
+      .then(this.getTranslations)
+      .then(this.getFilterLanguages);
   }
 
   render() {
@@ -60,6 +64,7 @@ export default class App extends React.Component {
               translations={this.state.translations}
               deleteTranslation={this.deleteTranslation}
               filter={this.state.filter}
+              filterLanguages={this.state.filterLanguages}
               updateFilter={this.updateFilter}
             />
           )}

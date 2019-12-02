@@ -1,21 +1,21 @@
 import React from 'react';
 
-export default function Saved({ translations, deleteTranslation, filter, updateFilter }) {
-  let filterLanguagesObj = translations.reduce((accum, value) => {
-    accum[value.target] = value.language;
-    return accum;
-  }, {});
-  let filterLanguages = Object.keys(filterLanguagesObj);
+export default function Saved({
+  translations,
+  deleteTranslation,
+  filter,
+  filterLanguages,
+  updateFilter
+}) {
   if (filter.length > 0)
     translations = translations.filter(translation => translation.target === filter);
-
   return (
     <div>
       <select value={filter} onChange={updateFilter}>
         <option value="">Filter by language</option>
-        {filterLanguages.map(target => (
+        {Object.keys(filterLanguages).map(target => (
           <option key={target} value={target}>
-            {filterLanguagesObj[target]}
+            {filterLanguages[target]}
           </option>
         ))}
       </select>

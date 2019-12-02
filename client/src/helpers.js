@@ -31,7 +31,7 @@ module.exports.deleteTranslation = function(id) {
   axios
     .delete(`/translations/${id}`)
     .then(this.getTranslations)
-    .then(() => this.setState({ filter: '' }));
+    .then(this.getFilterLanguages);
 };
 
 module.exports.updateText = function(e) {
@@ -60,14 +60,37 @@ module.exports.saveTranslation = function() {
     .post('/translations/save', {
       text: this.state.text,
       translation: this.state.translation,
-      target: this.state.language,
-      filter: ''
+      target: this.state.language
     })
     .then(this.getTranslations)
-    .then(() => this.setState({ text: '', translation: '', filter: '' }))
+    .then(() => {
+      let state = { text: '', translation: '' };
+      if (this.state.language !== this.state.filter) state['filter'] = '';
+      this.setState(state);
+    })
     .catch(err => console.log('Error:', err));
 };
 
 module.exports.updateFilter = function(e) {
   this.setState({ filter: e.target.value });
+};
+
+module.exports.getFilterLanguages = function() {
+  let newFilterLanguages = this.state.translations.reduce((accum, value) => {
+    accum[value.target] = value.language;
+    return accum;
+  }, {});
+
+  let same = true;
+  if (Object.keys(newFilterLanguages).length !== Object.keys(this.state.filterLanguages).length)
+    same = false;
+  if (same) {
+    for (let target in this.state.filterLanguages) {
+      if (!newFilterLanguages[target]) {
+        same = false;
+        break;
+      }
+    }
+  }
+  if (!same) return this.setState({ filterLanguages: newFilterLanguages, filter: '' });
 };
