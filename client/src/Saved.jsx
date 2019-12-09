@@ -31,7 +31,7 @@ export default function Saved({
         <tbody>
           {translations.map(translation => (
             <tr key={translation._id}>
-              <th scope="row">{translation.text}</th>
+              <td>{translation.text}</td>
               <td>{translation.translation}</td>
               <td>{translation.language}</td>
               <td>
