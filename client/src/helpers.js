@@ -63,10 +63,9 @@ module.exports.saveTranslation = function() {
       target: this.state.language
     })
     .then(this.getTranslations)
+    .then(this.getFilterLanguages)
     .then(() => {
-      let state = { text: '', translation: '' };
-      if (this.state.language !== this.state.filter) state['filter'] = '';
-      this.setState(state);
+      return this.setState({ text: '', translation: '' });
     })
     .catch(err => console.log('Error:', err));
 };
