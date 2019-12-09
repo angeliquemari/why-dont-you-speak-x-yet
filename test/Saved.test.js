@@ -1,7 +1,6 @@
 import React from 'react';
 import { shallow } from 'enzyme';
 import Saved from '../client/src/Saved.jsx';
-import { deleteTranslation, updateFilter } from '../client/src/helpers.js';
 
 const oneTranslation = [
   {
@@ -36,10 +35,10 @@ describe('Saved Component', () => {
     let wrapper = shallow(
       <Saved
         translations={oneTranslation}
-        deleteTranslation={deleteTranslation}
+        deleteTranslation={() => {}}
         filter={''}
         filterLanguages={oneTranslationFilterLangs}
-        updateFilter={updateFilter}
+        updateFilter={() => {}}
       />
     );
     let row = wrapper.find('tbody').find('tr');
@@ -53,10 +52,10 @@ describe('Saved Component', () => {
     let wrapper = shallow(
       <Saved
         translations={twoTranslations}
-        deleteTranslation={deleteTranslation}
+        deleteTranslation={() => {}}
         filter={''}
         filterLanguages={twoTranslationsFilterLangs}
-        updateFilter={updateFilter}
+        updateFilter={() => {}}
       />
     );
     let row1 = wrapper.find('tr').at(1);
@@ -69,10 +68,10 @@ describe('Saved Component', () => {
     let wrapper = shallow(
       <Saved
         translations={twoTranslations}
-        deleteTranslation={deleteTranslation}
+        deleteTranslation={() => {}}
         filter={''}
         filterLanguages={twoTranslationsFilterLangs}
-        updateFilter={updateFilter}
+        updateFilter={() => {}}
       />
     );
     let dropdown = wrapper.find('select');
@@ -84,13 +83,52 @@ describe('Saved Component', () => {
     let wrapper = shallow(
       <Saved
         translations={twoTranslations}
-        deleteTranslation={deleteTranslation}
+        deleteTranslation={() => {}}
         filter={'nl'}
         filterLanguages={twoTranslationsFilterLangs}
-        updateFilter={updateFilter}
+        updateFilter={() => {}}
       />
     );
     let row = wrapper.find('tr').at(1);
     expect(row.key()).toEqual('5de2086a36400c83face6056');
+  });
+
+  it('Clicking on the delete button calls deleteTranslation with ID of translation', () => {
+    let mockFn = jest.fn();
+    let wrapper = shallow(
+      <Saved
+        translations={oneTranslation}
+        deleteTranslation={mockFn}
+        filter={''}
+        filterLanguages={oneTranslationFilterLangs}
+        updateFilter={() => {}}
+      />
+    );
+
+    let deleteButton = wrapper
+      .find('tr')
+      .at(1)
+      .find('td')
+      .at(3)
+      .find('button');
+    deleteButton.simulate('click');
+    expect(mockFn).toBeCalled();
+    expect(mockFn).toBeCalledWith('5dedbec0d0cbdb4a82a9b594');
+  });
+
+  it('Selecting language from dropdown calls updateFilter', () => {
+    let mockFn = jest.fn();
+    let wrapper = shallow(
+      <Saved
+        translations={oneTranslation}
+        deleteTranslation={() => {}}
+        filter={''}
+        filterLanguages={oneTranslationFilterLangs}
+        updateFilter={mockFn}
+      />
+    );
+    let dropdown = wrapper.find('select');
+    dropdown.simulate('change');
+    expect(mockFn).toBeCalled();
   });
 });
