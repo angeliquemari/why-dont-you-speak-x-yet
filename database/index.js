@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-mongoose.connect('mongodb://localhost:27017/translations', {
+mongoose.connect('mongodb://localhost:27017/why-dont-you-speak-x-yet', {
   useNewUrlParser: true,
   useUnifiedTopology: true
 });
